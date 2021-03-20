@@ -1,0 +1,53 @@
+name: push
+
+on:
+  push:
+    branches:
+      - master
+
+env:
+  APP_IMAGE_NAME: mischenkovn/devops-for-programmers-project-lvl1
+  COLOR_MAP: '{ success: "#008000", failure: "#800000" }'
+  BUILDKIT_INLINE_CACHE: 1
+  COMPOSE_DOCKER_CLI_BUILD: 1
+  DOCKER_BUILDKIT: 1
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+
+      - uses: actions/checkout@v2
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+
+      - name: Login to DockerHub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Build App
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          file: Dockerfile.production
+          cache-from: type=registry,ref=${{ env.APP_IMAGE_NAME }}:cached
+          cache-to: type=inline
+          push: true
+          tags: ${{ env.APP_IMAGE_NAME }}:cached
+
+      - name: Check
+        run: |
+	  docker rm -f test-prod  \
+                && docker run -e NODOS_HOST=0.0.0.0 --rm --detach --name test-prod ${{ env.APP_IMAGE_NAME }}:cached \
+		&& docker exec test-prod bash -c "for i in {1..9}; do sleep 1; curl localhost:8080 && exit 0; done; exit 1" \
+      - name: Push
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          file: Dockerfile.production
+          cache-from: type=registry,ref=${{ env.APP_IMAGE_NAME }}:cached
+          push: true
+          tags: ${{ env.APP_IMAGE_NAME }}:latest
