@@ -2,3 +2,10 @@ version: '3'
 services:
   app:
     build: .
+    links:
+      - db 
+  db:
+    image: postgres:12.6-alpine
+    restart: always
+    environment:
+      - POSTGRES_PASSWORD=postgres
