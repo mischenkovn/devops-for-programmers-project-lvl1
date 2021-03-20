@@ -1,4 +1,4 @@
-name: push
+name: push-prod
 
 on:
   push:
