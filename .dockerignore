@@ -1,0 +1,4 @@
+.git
+.ci
+.docker-sync
+node_modules
