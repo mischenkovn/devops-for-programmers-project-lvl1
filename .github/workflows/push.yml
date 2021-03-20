@@ -40,9 +40,8 @@ jobs:
 
       - name: Check
         run: |
-	  docker rm -f test-prod  \
-                && docker run -e NODOS_HOST=0.0.0.0 --rm --detach --name test-prod ${{ env.APP_IMAGE_NAME }}:cached \
-		&& docker exec test-prod bash -c "for i in {1..9}; do sleep 1; curl localhost:8080 && exit 0; done; exit 1" \
+          docker run -e NODOS_HOST=0.0.0.0 --rm --detach --name test-prod ${{ env.APP_IMAGE_NAME }}:cached \
+          && docker exec test-prod bash -c "for i in {1..9}; do sleep 1; curl localhost:8080 && exit 0; done; exit 1"
       - name: Push
         uses: docker/build-push-action@v2
         with:
