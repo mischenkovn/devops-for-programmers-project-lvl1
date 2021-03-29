@@ -2,7 +2,7 @@ DOCKER_IMAGES_TAG?=latest
 DOCKER_REGISTRY_URL?=mischenkovn/devops-for-programmers-project-lvl1
 
 test-web:
-	docker-compose exec app bash -c 'for i in {1..9}; do sleep 1; curl localhost:8080 && exit 0; done; exit 1' | grep Framework 
+	docker-compose exec app bash -c "for i in {1..9}; do sleep 1; curl localhost:8080 && exit 0; done; exit 1" 
 
 push-release:
 	docker tag ${DOCKER_REGISTRY_URL}:cashed ${DOCKER_REGISTRY_URL}:${DOCKER_IMAGES_TAG}
