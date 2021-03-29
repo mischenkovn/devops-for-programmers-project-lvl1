@@ -3,7 +3,7 @@ name: push-prod
 on:
   push:
     branches:
-      - master
+      - main 
 
 env:
   APP_IMAGE_NAME: mischenkovn/devops-for-programmers-project-lvl1
